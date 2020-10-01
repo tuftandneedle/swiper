@@ -108,6 +108,31 @@ async function build(cb) {
       }
 
       fse.writeFileSync(path.resolve(__dirname, `../${outputDir}`, file), fileContent);
+
+      // Build component css
+      if (file.match(/\.less$/)) {
+        (async () => {
+          let cssContent;
+          try {
+            let resolvePath;
+            if (file.indexOf('navigation.less') >= 0) {
+              resolvePath = path.resolve(__dirname, `../${outputDir}/components/navigation`);
+            } else if (file.indexOf('pagination.less') >= 0) {
+              resolvePath = path.resolve(__dirname, `../${outputDir}/components/pagination`);
+            }
+
+            cssContent = await autoprefixer(await less(fileContent, resolvePath));
+            const minifiedContent = await cleanCSS(cssContent);
+
+            // Write file
+            const cssFile = file.replace(/\.less$/, '.css');
+            fse.writeFileSync(path.resolve(__dirname, `../${outputDir}`, cssFile), minifiedContent);
+          } catch (err) {
+            console.log(err);
+          }
+        })();
+      }
+
       if (index === files.length - 1) cb();
     });
   });
@@ -116,7 +141,7 @@ async function build(cb) {
   const minifiedContent = await cleanCSS(cssContent);
 
   // Write file
-  fse.writeFileSync(`./${outputDir}/swiper-bundle.min.css`, `${banner}\n${minifiedContent}`);
+  fse.writeFileSync(`./ ${outputDir} / swiper - bundle.min.css`, `${banner}\n${minifiedContent}`);
 
   if (cb) cb();
 }
