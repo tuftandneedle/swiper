@@ -141,7 +141,7 @@ async function build(cb) {
   const minifiedContent = await cleanCSS(cssContent);
 
   // Write file
-  fse.writeFileSync(`./ ${outputDir} / swiper - bundle.min.css`, `${banner}\n${minifiedContent}`);
+  fse.writeFileSync(`./${outputDir}/swiper-bundle.min.css`, `${banner}\n${minifiedContent}`);
 
   if (cb) cb();
 }
